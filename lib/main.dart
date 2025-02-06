@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -20,8 +22,8 @@ void main() async {
   if (petBox.isEmpty) {
     addDefaultPets(petBox);
   }
-
-  runApp(GetMaterialApp(themeMode: ThemeMode.system, home: HomePage(),));
+  HttpOverrides.global = MyHttpOverrides();
+  runApp(GetMaterialApp(debugShowCheckedModeBanner: false, themeMode: ThemeMode.system, initialRoute: '/', home: HomePage(),));
 
 }
 
@@ -46,3 +48,6 @@ void addDefaultPets(Box<Pet> petBox) {
     hiveService.addPet(pet);
   }
 }
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context){    return super.createHttpClient(context)      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;  }}
